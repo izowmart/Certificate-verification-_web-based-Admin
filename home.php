@@ -35,7 +35,18 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <link href="style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+  <script>
+ function generate_qrcode(sample){
+ $.ajax({
+ 		type: 'post',
+ 		url: 'qr_generation.php',
+ 		data : {sample:sample},
+ 		success: function(code){
+ 			$('#result').html(code);
+ 		}
+ 	});
+ }
+</script>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -122,76 +133,85 @@
 				<div class="page-header" id="qrcode">
 					<h2>QRcode Generation <small>Generate certificates qrcode</small></h2>			
 				</div>
-				<textarea onkeyup="generate_qrcode(this.value)" cols="4" rows="2"></textarea>
+				<form class="form-inline" method="POST" action="home.php">
+					<div class="form-group">
+						<label for "id">Enter a genuine id</label>
+						<input type="number" onkeyup="generate_qrcode(this.value)"class="form-control">
+					</div>
+				</form>
+					
 				<div id="result"></div>
 			</div>
 		</div>
 	</div>
-	<div class="container">
-		<div class="page-header" id="certs">
-			<h2>Certificates <small>Students certificates generated from the database</small></h2>			
-		</div>
-		<div class="row">			
-				<table class="table table-bordered">
-					<tr>
-						<th>#</th>
-						<th>Name</th>
-						<th>Institution</th>
-						<th>Reg-number</th>
-						<th>Grade</th>
-						<th>Date</th>
-						<th>&nbsp;</th>
-					</tr>
-					
-					<?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {?>
-							
-						<tr>		
-							<td><?php echo $row['id']; ?></td>
-							<td><?php echo $row['name']; ?></td>
-							<td><?php echo $row['institution']; ?></td>
-							<td><?php echo $row['reg_number']; ?></td>
-							<td><?php echo $row['grade']; ?></td>
-							<td><?php echo $row['tdate']; ?></td>
-							<td><a href="home.php?edit=<?php echo $row['id']; ?>" class="btn btn-primary">Edit</a></td>
-						</tr>
-					<?php } ?>	
-					
-				</table>
-		</div>
-	</div>
-	<?php include ("report.php");  ?>
-	<div class="container">
-		<div class="page-header" id="reports">
-			<h2>Reports <small>Sent reports generated from the database</small></h2>			
-		</div>
-		<div class="row">			
-				<table class="table table-bordered">
-					<tr>
-						<th>#</th>
-						<th>Name</th>
-						<th>Email</th>
-						<th>Description</th>
-						<th>Premises</th>
-						<th>Radiogroup</th>
-						<th>Image url</th>
-					</tr>
-					
-					<?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {?>
-							
-						<tr>		
-							<td><?php echo $row['id']; ?></td>
-							<td><?php echo $row['name']; ?></td>
-							<td><?php echo $row['email']; ?></td>
-							<td><?php echo $row['descr']; ?></td>
-							<td><?php echo $row['place']; ?></td>
-							<td><?php echo $row['radiogroup']; ?></td>
-							<td><?php echo $row['image']; ?></td>
-						</tr>
-					<?php } ?>		
-				</table>
-		</div>
-	</div>
+	<div class="container" id="accordion">
+		<div class="container">
+			<div class="page-header" id="certs">
+				<h2><a href="#collapse_1" data-toggle="collapse" data-parent="#arcodion">Certificates <small>Students certificates generated from the database</small></a></h2>	
 
+			</div>
+			<div class="row" id="collapse_1">			
+					<table class="table table-bordered">
+						<tr>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Institution</th>
+							<th>Reg-number</th>
+							<th>Grade</th>
+							<th>Date</th>
+							<th>&nbsp;</th>
+						</tr>
+						
+						<?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {?>
+								
+							<tr>		
+								<td><?php echo $row['id']; ?></td>
+								<td><?php echo $row['name']; ?></td>
+								<td><?php echo $row['institution']; ?></td>
+								<td><?php echo $row['reg_number']; ?></td>
+								<td><?php echo $row['grade']; ?></td>
+								<td><?php echo $row['tdate']; ?></td>
+								<td><a href="home.php?edit=<?php echo $row['id']; ?>" class="btn btn-primary">Edit</a></td>
+							</tr>
+						<?php } ?>	
+						
+					</table>
+			</div>
+		</div>
+		<?php include ("report.php");  ?>
+		<div class="container" >
+			<div class="page-header" id="reports">
+				<h2><a href="#collapse-2" data-toggle="collapse" data-parent="#arcodion">Reports <small>Sent reports generated from the database</small></a></h2>
+							
+			</div>
+			<div class="row" id="collapse_2">			
+					<table class="table table-bordered">
+						<tr>
+							<th>#</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Description</th>
+							<th>Premises</th>
+							<th>Radiogroup</th>
+							<th>Image url</th>
+						</tr>
+						
+						<?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {?>
+								
+							<tr>		
+								<td><?php echo $row['id']; ?></td>
+								<td><?php echo $row['name']; ?></td>
+								<td><?php echo $row['email']; ?></td>
+								<td><?php echo $row['descr']; ?></td>
+								<td><?php echo $row['place']; ?></td>
+								<td><?php echo $row['radiogroup']; ?></td>
+								<td><?php echo $row['image']; ?></td>
+							</tr>
+						<?php } ?>		
+					</table>
+			</div>
+		</div>
+	</div>
 
 	<footer>
 		<div class="container text-center">
@@ -227,17 +247,6 @@
 		</div>	
 	</footer>
 </body>
-<script>
- function generate_qrcode(sample){
- $.ajax({
- 		type: 'post',
- 		url: 'qr_generation.php',
- 		data : {sample:sample},
- 		success: function(code){
- 			$('#result').html(code);
- 		}
- 	});
- }
-</script>
+
 </html>
 
